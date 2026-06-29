@@ -1,7 +1,16 @@
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+const suggestions = [
+  "LAX Airport",
+  "Santa Monica Pier",
+  "Dodger Stadium",
+  "Crypto.com Arena",
+  "Hollywood Walk of Fame",
+  "Downtown Los Angeles",
+];
 
 export default function RiderScreen() {
   const [pickup, setPickup] = useState("");
@@ -41,7 +50,7 @@ export default function RiderScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.logo}>ZUVO</Text>
       <Text style={styles.title}>Where to?</Text>
 
@@ -72,6 +81,18 @@ export default function RiderScreen() {
           onChangeText={setDropoff}
         />
 
+        <Text style={styles.suggestionTitle}>Suggested places</Text>
+
+        {suggestions.map((place) => (
+          <TouchableOpacity
+            key={place}
+            style={styles.suggestion}
+            onPress={() => setDropoff(place)}
+          >
+            <Text style={styles.suggestionText}>📍 {place}</Text>
+          </TouchableOpacity>
+        ))}
+
         <TouchableOpacity style={styles.button} onPress={goToConfirm}>
           <Text style={styles.buttonText}>Confirm Ride</Text>
         </TouchableOpacity>
@@ -80,12 +101,13 @@ export default function RiderScreen() {
       <TouchableOpacity onPress={() => router.push("/")}>
         <Text style={styles.back}>← Back home</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#050505", padding: 24 },
+  container: { flex: 1, backgroundColor: "#050505" },
+  content: { padding: 24, paddingBottom: 40 },
   logo: { color: "#A6FF00", fontSize: 28, fontWeight: "900", marginTop: 20 },
   title: { color: "white", fontSize: 42, fontWeight: "900", marginTop: 20 },
   mapBox: {
@@ -104,7 +126,10 @@ const styles = StyleSheet.create({
   locationButton: { borderColor: "#A6FF00", borderWidth: 1, padding: 16, borderRadius: 18, marginBottom: 12, alignItems: "center" },
   locationButtonText: { color: "#A6FF00", fontWeight: "900" },
   input: { backgroundColor: "#1E1E1E", color: "white", padding: 18, borderRadius: 18, marginBottom: 12, fontSize: 16 },
-  button: { backgroundColor: "#A6FF00", padding: 18, borderRadius: 20, alignItems: "center", marginTop: 8 },
+  suggestionTitle: { color: "white", fontSize: 16, fontWeight: "900", marginTop: 8, marginBottom: 10 },
+  suggestion: { backgroundColor: "#1A1A1A", padding: 14, borderRadius: 14, marginBottom: 8 },
+  suggestionText: { color: "#A6FF00", fontWeight: "800" },
+  button: { backgroundColor: "#A6FF00", padding: 18, borderRadius: 20, alignItems: "center", marginTop: 12 },
   buttonText: { color: "#050505", fontSize: 16, fontWeight: "900" },
   back: { color: "#A6FF00", textAlign: "center", marginTop: 22, fontWeight: "800" },
 });
