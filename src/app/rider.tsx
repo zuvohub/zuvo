@@ -36,12 +36,7 @@ export default function RiderScreen() {
 
     router.push({
       pathname: "/confirm",
-      params: {
-        pickup,
-        dropoff,
-        latitude,
-        longitude,
-      },
+      params: { pickup, dropoff, latitude, longitude },
     });
   }
 
@@ -50,7 +45,8 @@ export default function RiderScreen() {
       <Text style={styles.logo}>ZUVO</Text>
       <Text style={styles.title}>Where to?</Text>
 
-      <View style={styles.map}>
+      <View style={styles.mapBox}>
+        <Text style={styles.mapTitle}>🗺️ Map Preview</Text>
         <Text style={styles.mapText}>📍 {locationText}</Text>
         <Text style={styles.car}>🚗</Text>
       </View>
@@ -92,10 +88,19 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#050505", padding: 24 },
   logo: { color: "#A6FF00", fontSize: 28, fontWeight: "900", marginTop: 20 },
   title: { color: "white", fontSize: 42, fontWeight: "900", marginTop: 20 },
-  map: { height: 230, backgroundColor: "#111", borderRadius: 28, marginTop: 24, alignItems: "center", justifyContent: "center", padding: 20 },
+  mapBox: {
+    height: 260,
+    borderRadius: 28,
+    marginTop: 24,
+    backgroundColor: "#111",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  mapTitle: { color: "white", fontSize: 24, fontWeight: "900", marginBottom: 12 },
   mapText: { color: "#A6FF00", fontSize: 18, fontWeight: "900", textAlign: "center" },
   car: { fontSize: 50, marginTop: 20 },
-  card: { backgroundColor: "#101010", padding: 18, borderRadius: 28, marginTop: 20 },
+  card: { backgroundColor: "#101010", padding: 18, borderRadius: 28, marginTop: 16 },
   locationButton: { borderColor: "#A6FF00", borderWidth: 1, padding: 16, borderRadius: 18, marginBottom: 12, alignItems: "center" },
   locationButtonText: { color: "#A6FF00", fontWeight: "900" },
   input: { backgroundColor: "#1E1E1E", color: "white", padding: 18, borderRadius: 18, marginBottom: 12, fontSize: 16 },
