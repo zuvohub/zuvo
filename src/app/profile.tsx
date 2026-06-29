@@ -2,7 +2,10 @@ import { router } from "expo-router";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+
+import ZuvoButton from "../components/ZuvoButton";
+import ZuvoCard from "../components/ZuvoCard";
 import { auth } from "../firebase";
 import db from "../firestore";
 
@@ -16,7 +19,10 @@ export default function ProfileScreen() {
 
       if (currentUser) {
         const profileDoc = await getDoc(doc(db, "users", currentUser.uid));
-        setProfile(profileDoc.data());
+
+        if (profileDoc.exists()) {
+          setProfile(profileDoc.data());
+        }
       }
     });
 
@@ -31,35 +37,69 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>ZUVO</Text>
+
       <Text style={styles.title}>Profile</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.row}>Name: {profile?.name || "Loading..."}</Text>
-        <Text style={styles.row}>Email: {user?.email || "Not logged in"}</Text>
-        <Text style={styles.row}>Account: {profile?.accountType || "N/A"}</Text>
-        <Text style={styles.row}>Rating: ⭐ {profile?.rating || "5.0"}</Text>
-        <Text style={styles.row}>Rides: {profile?.ridesCompleted || 0}</Text>
-      </View>
+      <ZuvoCard>
+        <Text style={styles.row}>
+          👤 Name: {profile?.name || "Loading..."}
+        </Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.push("/")}>
-        <Text style={styles.buttonText}>Back Home</Text>
-      </TouchableOpacity>
+        <Text style={styles.row}>
+          📧 Email: {user?.email || "Not logged in"}
+        </Text>
 
-      <TouchableOpacity style={styles.logout} onPress={logOut}>
-        <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
+        <Text style={styles.row}>
+          🚗 Account: {profile?.accountType || "N/A"}
+        </Text>
+
+        <Text style={styles.row}>
+          ⭐ Rating: {profile?.rating || 5.0}
+        </Text>
+
+        <Text style={styles.row}>
+          🚕 Rides Completed: {profile?.ridesCompleted || 0}
+        </Text>
+      </ZuvoCard>
+
+      <ZuvoButton
+        title="Back Home"
+        onPress={() => router.push("/")}
+      />
+
+      <ZuvoButton
+        title="Log Out"
+        onPress={logOut}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#050505", padding: 24, justifyContent: "center" },
-  logo: { color: "#A6FF00", fontSize: 30, fontWeight: "900", marginBottom: 20 },
-  title: { color: "white", fontSize: 42, fontWeight: "900", marginBottom: 24 },
-  card: { backgroundColor: "#111111", padding: 24, borderRadius: 24, marginBottom: 24 },
-  row: { color: "white", fontSize: 18, marginBottom: 14 },
-  button: { backgroundColor: "#A6FF00", padding: 18, borderRadius: 20, alignItems: "center" },
-  buttonText: { color: "#050505", fontSize: 18, fontWeight: "900" },
-  logout: { marginTop: 18 },
-  logoutText: { color: "white", textAlign: "center", fontSize: 16, fontWeight: "800" },
+  container: {
+    flex: 1,
+    backgroundColor: "#050505",
+    justifyContent: "center",
+    padding: 24,
+  },
+
+  logo: {
+    color: "#A6FF00",
+    fontSize: 30,
+    fontWeight: "900",
+    marginBottom: 20,
+  },
+
+  title: {
+    color: "white",
+    fontSize: 42,
+    fontWeight: "900",
+    marginBottom: 24,
+  },
+
+  row: {
+    color: "white",
+    fontSize: 18,
+    marginBottom: 14,
+  },
 });
