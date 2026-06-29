@@ -7,6 +7,8 @@ export default function RiderScreen() {
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
   const [locationText, setLocationText] = useState("Location not set");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   async function getCurrentLocation() {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -17,11 +19,13 @@ export default function RiderScreen() {
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    const latitude = location.coords.latitude.toFixed(4);
-    const longitude = location.coords.longitude.toFixed(4);
+    const lat = location.coords.latitude.toFixed(6);
+    const lng = location.coords.longitude.toFixed(6);
 
-    setLocationText(`Lat: ${latitude}, Lng: ${longitude}`);
-    setPickup(`Current GPS location (${latitude}, ${longitude})`);
+    setLatitude(lat);
+    setLongitude(lng);
+    setLocationText(`Lat: ${lat}, Lng: ${lng}`);
+    setPickup(`Current GPS location (${lat}, ${lng})`);
   }
 
   function goToConfirm() {
@@ -32,7 +36,12 @@ export default function RiderScreen() {
 
     router.push({
       pathname: "/confirm",
-      params: { pickup, dropoff },
+      params: {
+        pickup,
+        dropoff,
+        latitude,
+        longitude,
+      },
     });
   }
 
