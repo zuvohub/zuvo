@@ -8,18 +8,10 @@ import ZuvoButton from "../components/ZuvoButton";
 import ZuvoCard from "../components/ZuvoCard";
 import ZuvoHeader from "../components/ZuvoHeader";
 import ZuvoMapPreview from "../components/ZuvoMapPreview";
+import ZuvoPlacesInput from "../components/ZuvoPlacesInput";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 import { typography } from "../theme/typography";
-
-const suggestions = [
-  "LAX Airport",
-  "Santa Monica Pier",
-  "Dodger Stadium",
-  "Crypto.com Arena",
-  "Hollywood Walk of Fame",
-  "Downtown Los Angeles",
-];
 
 export default function RiderScreen() {
   const [pickup, setPickup] = useState("");
@@ -27,6 +19,8 @@ export default function RiderScreen() {
   const [locationText, setLocationText] = useState("Location not set");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [dropoffLatitude, setDropoffLatitude] = useState("");
+  const [dropoffLongitude, setDropoffLongitude] = useState("");
 
   async function getCurrentLocation() {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -54,7 +48,14 @@ export default function RiderScreen() {
 
     router.push({
       pathname: "/confirm",
-      params: { pickup, dropoff, latitude, longitude },
+      params: {
+        pickup,
+        dropoff,
+        latitude,
+        longitude,
+        dropoffLatitude,
+        dropoffLongitude,
+      },
     });
   }
 
@@ -78,25 +79,18 @@ export default function RiderScreen() {
             onChangeText={setPickup}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="🏁 Destination"
-            placeholderTextColor={colors.mutedText}
+          <ZuvoPlacesInput
             value={dropoff}
-            onChangeText={setDropoff}
+            onSelect={(place) => {
+              setDropoff(place.description);
+              setDropoffLatitude(place.latitude ? String(place.latitude) : "");
+              setDropoffLongitude(place.longitude ? String(place.longitude) : "");
+            }}
           />
 
-          <Text style={styles.suggestionTitle}>Suggested places</Text>
-
-          {suggestions.map((place) => (
-            <TouchableOpacity
-              key={place}
-              style={styles.suggestion}
-              onPress={() => setDropoff(place)}
-            >
-              <Text style={styles.suggestionText}>📍 {place}</Text>
-            </TouchableOpacity>
-          ))}
+          <Text style={styles.helperText}>
+            Search real Google places like LAX, Santa Monica, or Dodger Stadium.
+          </Text>
 
           <ZuvoButton title="Confirm Ride" onPress={goToConfirm} />
         </ZuvoCard>
@@ -140,21 +134,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     fontSize: typography.body,
   },
-  suggestionTitle: {
-    color: colors.text,
-    fontSize: typography.body,
-    fontWeight: typography.bold,
+  helperText: {
+    color: colors.mutedText,
+    fontSize: typography.caption,
     marginTop: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  suggestion: {
-    backgroundColor: colors.surfaceLight,
-    padding: spacing.md,
-    borderRadius: 14,
     marginBottom: spacing.sm,
-  },
-  suggestionText: {
-    color: colors.primary,
-    fontWeight: typography.semibold,
   },
 });
