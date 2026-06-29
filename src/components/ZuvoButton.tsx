@@ -1,4 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
+import { typography } from "../theme/typography";
 
 type Props = {
   title: string;
@@ -15,16 +18,15 @@ export default function ZuvoButton({ title, onPress }: Props) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#A6FF00",
-    padding: 18,
+    backgroundColor: colors.primary,
+    padding: spacing.md + 2,
     borderRadius: 20,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: spacing.sm,
   },
-
   text: {
-    color: "#050505",
-    fontSize: 18,
-    fontWeight: "900",
+    color: colors.darkText,
+    fontSize: typography.body,
+    fontWeight: typography.bold,
   },
 });

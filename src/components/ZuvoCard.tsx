@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
+import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
 
 type Props = {
   children: ReactNode;
@@ -11,9 +13,11 @@ export default function ZuvoCard({ children }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#111111",
-    padding: 20,
-    borderRadius: 20,
-    marginBottom: 16,
+    backgroundColor: colors.surface,
+    padding: spacing.lg,
+    borderRadius: 24,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });
