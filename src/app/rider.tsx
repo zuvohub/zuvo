@@ -4,6 +4,13 @@ import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import BottomNav from "../components/BottomNav";
+import ZuvoButton from "../components/ZuvoButton";
+import ZuvoCard from "../components/ZuvoCard";
+import ZuvoHeader from "../components/ZuvoHeader";
+import ZuvoMapPreview from "../components/ZuvoMapPreview";
+import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
+import { typography } from "../theme/typography";
 
 const suggestions = [
   "LAX Airport",
@@ -54,16 +61,11 @@ export default function RiderScreen() {
   return (
     <View style={styles.page}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Text style={styles.logo}>ZUVO</Text>
-        <Text style={styles.title}>Where to?</Text>
+        <ZuvoHeader title="Book a ride" subtitle="Set your pickup and destination" />
 
-        <View style={styles.mapBox}>
-          <Text style={styles.mapTitle}>🗺️ Map Preview</Text>
-          <Text style={styles.mapText}>📍 {locationText}</Text>
-          <Text style={styles.car}>🚗</Text>
-        </View>
+        <ZuvoMapPreview locationText={locationText} />
 
-        <View style={styles.card}>
+        <ZuvoCard>
           <TouchableOpacity style={styles.locationButton} onPress={getCurrentLocation}>
             <Text style={styles.locationButtonText}>Use My Current Location</Text>
           </TouchableOpacity>
@@ -71,7 +73,7 @@ export default function RiderScreen() {
           <TextInput
             style={styles.input}
             placeholder="📍 Pickup location"
-            placeholderTextColor="#888"
+            placeholderTextColor={colors.mutedText}
             value={pickup}
             onChangeText={setPickup}
           />
@@ -79,7 +81,7 @@ export default function RiderScreen() {
           <TextInput
             style={styles.input}
             placeholder="🏁 Destination"
-            placeholderTextColor="#888"
+            placeholderTextColor={colors.mutedText}
             value={dropoff}
             onChangeText={setDropoff}
           />
@@ -96,10 +98,8 @@ export default function RiderScreen() {
             </TouchableOpacity>
           ))}
 
-          <TouchableOpacity style={styles.button} onPress={goToConfirm}>
-            <Text style={styles.buttonText}>Confirm Ride</Text>
-          </TouchableOpacity>
-        </View>
+          <ZuvoButton title="Confirm Ride" onPress={goToConfirm} />
+        </ZuvoCard>
       </ScrollView>
 
       <BottomNav />
@@ -110,106 +110,51 @@ export default function RiderScreen() {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
-    backgroundColor: "#050505",
+    backgroundColor: colors.background,
   },
   content: {
-    padding: 24,
+    padding: spacing.lg,
     paddingBottom: 120,
   },
-  logo: {
-    color: "#A6FF00",
-    fontSize: 28,
-    fontWeight: "900",
-    marginTop: 20,
-  },
-  title: {
-    color: "white",
-    fontSize: 42,
-    fontWeight: "900",
-    marginTop: 20,
-  },
-  mapBox: {
-    height: 260,
-    borderRadius: 28,
-    marginTop: 24,
-    backgroundColor: "#111",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  mapTitle: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "900",
-    marginBottom: 12,
-  },
-  mapText: {
-    color: "#A6FF00",
-    fontSize: 18,
-    fontWeight: "900",
-    textAlign: "center",
-  },
-  car: {
-    fontSize: 50,
-    marginTop: 20,
-  },
-  card: {
-    backgroundColor: "#101010",
-    padding: 18,
-    borderRadius: 28,
-    marginTop: 16,
-  },
   locationButton: {
-    borderColor: "#A6FF00",
+    borderColor: colors.primary,
     borderWidth: 1,
-    padding: 16,
+    padding: spacing.md,
     borderRadius: 18,
-    marginBottom: 12,
+    marginBottom: spacing.md,
     alignItems: "center",
   },
   locationButtonText: {
-    color: "#A6FF00",
-    fontWeight: "900",
+    color: colors.primary,
+    fontWeight: typography.bold,
   },
   input: {
-    backgroundColor: "#1E1E1E",
-    color: "white",
-    padding: 18,
+    backgroundColor: colors.surfaceLight,
+    color: colors.text,
+    padding: spacing.md + 2,
     borderRadius: 18,
-    marginBottom: 12,
-    fontSize: 16,
+    marginBottom: spacing.md,
+    fontSize: typography.body,
   },
   suggestionTitle: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "900",
-    marginTop: 8,
-    marginBottom: 10,
+    color: colors.text,
+    fontSize: typography.body,
+    fontWeight: typography.bold,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
   },
   suggestion: {
-    backgroundColor: "#1A1A1A",
-    padding: 14,
+    backgroundColor: colors.surfaceLight,
+    padding: spacing.md,
     borderRadius: 14,
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   suggestionText: {
-    color: "#A6FF00",
-    fontWeight: "800",
-  },
-  button: {
-    backgroundColor: "#A6FF00",
-    padding: 18,
-    borderRadius: 20,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  buttonText: {
-    color: "#050505",
-    fontSize: 16,
-    fontWeight: "900",
+    color: colors.primary,
+    fontWeight: typography.semibold,
   },
 });
