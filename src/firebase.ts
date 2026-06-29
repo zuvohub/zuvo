@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDAnO-Dt4pA630g5cVuHZQzXRrUsyARDdo",
+  apiKey: "AIzaSyDAnO-Dt4pA63Og5cVuHZQzXRrUsyARDdo",
   authDomain: "zuvo-6df01.firebaseapp.com",
   projectId: "zuvo-6df01",
   storageBucket: "zuvo-6df01.firebasestorage.app",
@@ -11,4 +12,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+export const auth = getAuth(app);
 export default app;

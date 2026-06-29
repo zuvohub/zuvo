@@ -1,18 +1,22 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import db from "../firestore";
 
 export default function ConfirmScreen() {
+  const { pickup, dropoff } = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
+
+  const pickupText = String(pickup || "Current location");
+  const dropoffText = String(dropoff || "Destination");
 
   async function saveRideRequest() {
     setLoading(true);
 
     await addDoc(collection(db, "rides"), {
-      pickup: "Current location",
-      dropoff: "Santa Monica Pier",
+      pickup: pickupText,
+      dropoff: dropoffText,
       total: 18.4,
       driverEarns: 16.56,
       zuvoFee: 1.84,
@@ -30,8 +34,8 @@ export default function ConfirmScreen() {
       <Text style={styles.title}>Confirm Ride</Text>
 
       <View style={styles.card}>
-        <Text style={styles.row}>📍 Pickup: Current location</Text>
-        <Text style={styles.row}>🏁 Drop-off: Santa Monica Pier</Text>
+        <Text style={styles.row}>📍 Pickup: {pickupText}</Text>
+        <Text style={styles.row}>🏁 Drop-off: {dropoffText}</Text>
         <Text style={styles.row}>⏱️ Time: 24 min</Text>
         <Text style={styles.row}>📏 Distance: 11.2 mi</Text>
 
