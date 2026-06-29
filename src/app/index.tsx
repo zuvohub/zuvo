@@ -1,16 +1,18 @@
 import { router } from "expo-router";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import BottomNav from "../components/BottomNav";
 import ZuvoButton from "../components/ZuvoButton";
+import ZuvoCard from "../components/ZuvoCard";
 import { auth } from "../firebase";
+import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
+import { typography } from "../theme/typography";
 
 export default function HomeScreen() {
-  const [showHome, setShowHome] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-
   const fade = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -20,11 +22,9 @@ export default function HomeScreen() {
 
     Animated.timing(fade, {
       toValue: 1,
-      duration: 1200,
+      duration: 800,
       useNativeDriver: true,
     }).start();
-
-    setTimeout(() => setShowHome(true), 800);
 
     return unsubscribe;
   }, []);
@@ -35,57 +35,91 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Animated.View
-        style={{
-          opacity: fade,
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.zLogo}>Z</Text>
+    <View style={styles.page}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Animated.View style={{ opacity: fade }}>
+          <View style={styles.topBar}>
+            <View>
+              <Text style={styles.logo}>ZUVO</Text>
+              <Text style={styles.greeting}>
+                {user ? "Good evening 👋" : "Welcome 👋"}
+              </Text>
+            </View>
 
-        <Text style={styles.logo}>ZUVO</Text>
+            <View style={styles.statusPill}>
+              <Text style={styles.statusText}>LA Beta</Text>
+            </View>
+          </View>
 
-        <Text style={styles.tagline}>
-          Fair rides. Fair pay.
-        </Text>
-
-        {user && (
-          <Text style={styles.user}>
-            Welcome back 👋{"\n"}
-            {user.email}
+          <Text style={styles.heroTitle}>Where are you going?</Text>
+          <Text style={styles.heroSubtitle}>
+            Fair rides for riders. Better pay for drivers.
           </Text>
-        )}
 
-        {showHome && (
-          <View style={styles.buttons}>
-            {!user && (
-              <ZuvoButton
-                title="Log In / Sign Up"
-                onPress={() => router.push("/login")}
-              />
-            )}
+          <ZuvoCard>
+            <Text style={styles.cardTitle}>Start a ride</Text>
+            <Text style={styles.cardSub}>Book a Zuvo ride in seconds.</Text>
 
             <ZuvoButton
               title="Ride With Zuvo"
               onPress={() => router.push("/rider")}
             />
+          </ZuvoCard>
 
-            <ZuvoButton
-              title="Drive With Zuvo"
-              onPress={() => router.push("/driver")}
-            />
+          <View style={styles.quickGrid}>
+            <TouchableOpacity style={styles.quickCard} onPress={() => router.push("/history")}>
+              <Text style={styles.quickIcon}>📜</Text>
+              <Text style={styles.quickTitle}>History</Text>
+              <Text style={styles.quickSub}>Your trips</Text>
+            </TouchableOpacity>
 
-            {user && (
-              <ZuvoButton
-                title="Log Out"
-                onPress={logOut}
-              />
-            )}
+            <TouchableOpacity style={styles.quickCard} onPress={() => router.push("/driver")}>
+              <Text style={styles.quickIcon}>🚗</Text>
+              <Text style={styles.quickTitle}>Drive</Text>
+              <Text style={styles.quickSub}>Earn more</Text>
+            </TouchableOpacity>
           </View>
-        )}
-      </Animated.View>
+
+          <ZuvoCard>
+            <Text style={styles.cardTitle}>Nearby activity</Text>
+            <View style={styles.activityRow}>
+              <Text style={styles.activityBig}>🚘 3</Text>
+              <View>
+                <Text style={styles.activityTitle}>Drivers online nearby</Text>
+                <Text style={styles.activitySub}>Mock data for now • Live soon</Text>
+              </View>
+            </View>
+          </ZuvoCard>
+
+          <ZuvoCard>
+            <Text style={styles.cardTitle}>Saved places</Text>
+            <TouchableOpacity style={styles.placeRow}>
+              <Text style={styles.placeIcon}>🏠</Text>
+              <View>
+                <Text style={styles.placeTitle}>Home</Text>
+                <Text style={styles.placeSub}>Add your home address</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.placeRow}>
+              <Text style={styles.placeIcon}>💼</Text>
+              <View>
+                <Text style={styles.placeTitle}>Work</Text>
+                <Text style={styles.placeSub}>Add your work address</Text>
+              </View>
+            </TouchableOpacity>
+          </ZuvoCard>
+
+          {!user ? (
+            <ZuvoButton
+              title="Log In / Sign Up"
+              onPress={() => router.push("/login")}
+            />
+          ) : (
+            <ZuvoButton title="Log Out" onPress={logOut} />
+          )}
+        </Animated.View>
+      </ScrollView>
 
       <BottomNav />
     </View>
@@ -93,43 +127,128 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#050505",
-    justifyContent: "center",
+    backgroundColor: colors.background,
+  },
+  content: {
+    padding: spacing.lg,
+    paddingBottom: 120,
+  },
+  topBar: {
+    marginTop: spacing.xl,
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    padding: 24,
   },
-
-  zLogo: {
-    fontSize: 100,
-    color: "#A6FF00",
-    fontWeight: "900",
-    marginBottom: -20,
-  },
-
   logo: {
-    fontSize: 56,
-    color: "white",
-    fontWeight: "900",
-    letterSpacing: 4,
+    color: colors.primary,
+    fontSize: typography.heading,
+    fontWeight: typography.bold,
   },
-
-  tagline: {
-    color: "#A6FF00",
-    marginTop: 10,
-    fontSize: 18,
+  greeting: {
+    color: colors.mutedText,
+    fontSize: typography.body,
+    marginTop: spacing.xs,
   },
-
-  user: {
-    color: "white",
-    marginTop: 25,
-    textAlign: "center",
-    fontSize: 15,
+  statusPill: {
+    backgroundColor: colors.surfaceLight,
+    borderColor: colors.primary,
+    borderWidth: 1,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 999,
   },
-
-  buttons: {
-    width: "100%",
-    marginTop: 40,
+  statusText: {
+    color: colors.primary,
+    fontWeight: typography.bold,
+  },
+  heroTitle: {
+    color: colors.text,
+    fontSize: 46,
+    fontWeight: typography.bold,
+    marginTop: spacing.xl,
+  },
+  heroSubtitle: {
+    color: colors.mutedText,
+    fontSize: typography.body,
+    marginTop: spacing.sm,
+    marginBottom: spacing.lg,
+  },
+  cardTitle: {
+    color: colors.text,
+    fontSize: typography.subheading,
+    fontWeight: typography.bold,
+  },
+  cardSub: {
+    color: colors.mutedText,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  quickGrid: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginBottom: spacing.md,
+  },
+  quickCard: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: spacing.lg,
+  },
+  quickIcon: {
+    fontSize: 30,
+    marginBottom: spacing.md,
+  },
+  quickTitle: {
+    color: colors.text,
+    fontSize: typography.subheading,
+    fontWeight: typography.bold,
+  },
+  quickSub: {
+    color: colors.mutedText,
+    marginTop: spacing.xs,
+  },
+  activityRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    marginTop: spacing.md,
+  },
+  activityBig: {
+    fontSize: 38,
+  },
+  activityTitle: {
+    color: colors.text,
+    fontSize: typography.body,
+    fontWeight: typography.bold,
+  },
+  activitySub: {
+    color: colors.mutedText,
+    marginTop: spacing.xs,
+  },
+  placeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    marginTop: spacing.md,
+  },
+  placeIcon: {
+    fontSize: 26,
+  },
+  placeTitle: {
+    color: colors.text,
+    fontSize: typography.body,
+    fontWeight: typography.bold,
+  },
+  placeSub: {
+    color: colors.mutedText,
+    marginTop: spacing.xs,
   },
 });
