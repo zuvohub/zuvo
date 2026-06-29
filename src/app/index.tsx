@@ -1,13 +1,15 @@
 import { router } from "expo-router";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
+
+import ZuvoButton from "../components/ZuvoButton";
 import { auth } from "../firebase";
 
 export default function HomeScreen() {
   const [showHome, setShowHome] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const fade = new Animated.Value(0);
+  const fade = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -32,9 +34,17 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ opacity: fade, width: "100%", alignItems: "center" }}>
+      <Animated.View
+        style={{
+          opacity: fade,
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
         <Text style={styles.zLogo}>Z</Text>
+
         <Text style={styles.logo}>ZUVO</Text>
+
         <Text style={styles.tagline}>Fair rides. Fair pay.</Text>
 
         {user ? (
@@ -46,23 +56,32 @@ export default function HomeScreen() {
         {showHome && (
           <View style={styles.buttonBox}>
             {!user && (
-              <TouchableOpacity style={styles.button} onPress={() => router.push("/login")}>
-                <Text style={styles.buttonText}>Log In / Sign Up</Text>
-              </TouchableOpacity>
+              <ZuvoButton
+                title="Log In / Sign Up"
+                onPress={() => router.push("/login")}
+              />
             )}
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push("/rider")}>
-              <Text style={styles.buttonText}>Ride with Zuvo</Text>
-            </TouchableOpacity>
+            <ZuvoButton
+              title="Ride with Zuvo"
+              onPress={() => router.push("/rider")}
+            />
 
-            <TouchableOpacity style={styles.outlineButton} onPress={() => router.push("/driver")}>
-              <Text style={styles.outlineText}>Drive with Zuvo</Text>
-            </TouchableOpacity>
+            <ZuvoButton
+              title="Drive with Zuvo"
+              onPress={() => router.push("/driver")}
+            />
+
+            <ZuvoButton
+              title="Profile"
+              onPress={() => router.push("/profile")}
+            />
 
             {user && (
-              <TouchableOpacity style={styles.logoutButton} onPress={logOut}>
-                <Text style={styles.logoutText}>Log Out</Text>
-              </TouchableOpacity>
+              <ZuvoButton
+                title="Log Out"
+                onPress={logOut}
+              />
             )}
           </View>
         )}
@@ -72,16 +91,42 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#050505", alignItems: "center", justifyContent: "center", padding: 24 },
-  zLogo: { fontSize: 96, fontWeight: "900", color: "#A6FF00", marginBottom: -20 },
-  logo: { fontSize: 56, fontWeight: "900", color: "#FFFFFF", letterSpacing: 4 },
-  tagline: { color: "#A6FF00", fontSize: 18, marginTop: 8 },
-  userText: { color: "white", marginTop: 20, fontSize: 14 },
-  buttonBox: { width: "100%", marginTop: 50 },
-  button: { backgroundColor: "#A6FF00", width: "100%", paddingVertical: 18, borderRadius: 20, alignItems: "center", marginBottom: 14 },
-  buttonText: { color: "#050505", fontSize: 16, fontWeight: "900" },
-  outlineButton: { borderColor: "#A6FF00", borderWidth: 1, width: "100%", paddingVertical: 18, borderRadius: 20, alignItems: "center", marginBottom: 14 },
-  outlineText: { color: "#A6FF00", fontSize: 16, fontWeight: "900" },
-  logoutButton: { paddingVertical: 14, alignItems: "center" },
-  logoutText: { color: "white", fontSize: 16, fontWeight: "800" },
+  container: {
+    flex: 1,
+    backgroundColor: "#050505",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+
+  zLogo: {
+    fontSize: 96,
+    fontWeight: "900",
+    color: "#A6FF00",
+    marginBottom: -20,
+  },
+
+  logo: {
+    fontSize: 56,
+    fontWeight: "900",
+    color: "white",
+    letterSpacing: 4,
+  },
+
+  tagline: {
+    color: "#A6FF00",
+    fontSize: 18,
+    marginTop: 8,
+  },
+
+  userText: {
+    color: "white",
+    marginTop: 18,
+    fontSize: 14,
+  },
+
+  buttonBox: {
+    width: "100%",
+    marginTop: 50,
+  },
 });
